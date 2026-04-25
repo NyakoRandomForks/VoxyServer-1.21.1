@@ -11,3 +11,4 @@ bin/
 voxy/
 voxy_old/
 libs/
+.DS_Store

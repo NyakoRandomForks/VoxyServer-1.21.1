@@ -39,8 +39,6 @@ repositories {
             includeGroup "maven.modrinth"
         }
     }
-    maven { url = "https://maven.terraformersmc.com/" }
-    maven { url = "https://maven.shedaniel.me/" }
     mavenCentral()
 }
 
@@ -52,17 +50,13 @@ dependencies {
 
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
-    modImplementation files("libs/voxy-1.21.11.jar")
-    modCompileOnly "maven.modrinth:sodium:mc1.21.11-0.8.6-fabric"
-    modCompileOnly "com.terraformersmc:modmenu:17.0.0"
-    modCompileOnly "me.shedaniel.cloth:cloth-config-fabric:21.11.153"
+    modImplementation files("libs/voxy.jar")
 
     // lwjgl is bundled with the client but not the dedicated server
     // voxy's Mapper uses MemoryUtil for off-heap allocation
     include implementation("org.lwjgl:lwjgl:3.3.3")
     include implementation("org.lwjgl:lwjgl::natives-windows")
     include implementation("org.lwjgl:lwjgl::natives-linux")
-    include implementation("org.lwjgl:lwjgl::natives-linux-arm64")
 }
 
 processResources {
