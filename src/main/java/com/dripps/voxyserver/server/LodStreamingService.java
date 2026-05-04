@@ -154,9 +154,12 @@ public class LodStreamingService {
             if (!payload.enabled()) {
                 tracker.reset();
             }
+
+            int effectiveRadius = tracker.getEffectiveRadius(lodStreamRadius);
+            int effectiveMaxSections = tracker.getEffectiveMaxSections(maxSectionsPerTick);
             Voxyserver.LOGGER.info("player {} updated LOD preferences: enabled={}, radius={}, maxSections={}",
                     context.player().getName().getString(), payload.enabled(),
-                    payload.lodStreamRadius(), payload.maxSectionsPerTick());
+                    effectiveRadius, effectiveMaxSections);
         });
 
         ServerTickEvents.END_SERVER_TICK.register(this::onServerTick);
