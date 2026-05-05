@@ -1,6 +1,6 @@
 package com.dripps.voxyserver.server;
 
-import com.dripps.voxyserver.Voxyserver;
+import com.dripps.voxyserver.VoxyServer;
 import com.dripps.voxyserver.network.LODBulkPayload;
 import com.dripps.voxyserver.network.LODClearPayload;
 import com.dripps.voxyserver.network.LODPreferencesPayload;
@@ -139,7 +139,7 @@ public class LodStreamingService {
             var tracker = trackers.get(context.player().getUUID());
             if (tracker != null) {
                 tracker.setReady(true);
-                Voxyserver.LOGGER.info("player {} is ready for LOD streaming", context.player().getName().getString());
+                VoxyServer.LOGGER.info("player {} is ready for LOD streaming", context.player().getName().getString());
                 ServerPlayNetworking.send(context.player(),
                         new LODServerSettingsPayload(lodStreamRadius, maxSectionsPerTick));
             }
@@ -157,7 +157,7 @@ public class LodStreamingService {
 
             int effectiveRadius = tracker.getEffectiveRadius(lodStreamRadius);
             int effectiveMaxSections = tracker.getEffectiveMaxSections(maxSectionsPerTick);
-            Voxyserver.LOGGER.info("player {} updated LOD preferences: enabled={}, radius={}, maxSections={}",
+            VoxyServer.LOGGER.info("player {} updated LOD preferences: enabled={}, radius={}, maxSections={}",
                     context.player().getName().getString(), payload.enabled(),
                     effectiveRadius, effectiveMaxSections);
         });
@@ -264,7 +264,7 @@ public class LodStreamingService {
                 }
                 streamForSnapshot(server, snap, tracker);
             } catch (Exception e) {
-                Voxyserver.LOGGER.error("error streaming LODs for player {}", snap.uuid, e);
+                VoxyServer.LOGGER.error("error streaming LODs for player {}", snap.uuid, e);
             }
         }
 
@@ -703,7 +703,7 @@ public class LodStreamingService {
                 handleVoxyCorruption(dim, "stuck stream worker (no heartbeat for "
                         + TimeUnit.NANOSECONDS.toSeconds(elapsed) + "s)", null);
             }
-            Voxyserver.LOGGER.error(
+            VoxyServer.LOGGER.error(
                     "[VoxyServer] stream worker unresponsive for {}s, prolly blocked on a leaked Voxy StampedLock. "
                             + "replacing stream executor. a daemon thread has been leaked.",
                     TimeUnit.NANOSECONDS.toSeconds(elapsed));
@@ -724,12 +724,12 @@ public class LodStreamingService {
     private void handleVoxyCorruption(ResourceLocation dimension, String context, Exception e) {
         if (!corruptedDimensions.add(dimension)) return;
         if (e != null) {
-            Voxyserver.LOGGER.error(
+            VoxyServer.LOGGER.error(
                     "[VoxyServer] Voxy state corruption :/ ({}) for dimension '{}'. "
                             + "lod streaming disabled for this dimension until server restart.",
                     context, dimension, e);
         } else {
-            Voxyserver.LOGGER.error(
+            VoxyServer.LOGGER.error(
                     "[VoxyServer] Voxy state corruption :/ ({}) for dimension '{}'. "
                             + "lod streaming disabled for this dimension until server restart.",
                     context, dimension);

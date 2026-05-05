@@ -18,7 +18,7 @@ import net.minecraft.world.level.storage.LevelResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class Voxyserver implements ModInitializer {
+public class VoxyServer implements ModInitializer {
     public static final String MOD_ID = "voxyserver";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 

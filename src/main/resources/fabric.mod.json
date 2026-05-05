@@ -15,13 +15,13 @@
   "environment": "*",
   "entrypoints": {
     "fabric-datagen": [
-      "com.dripps.voxyserver.client.VoxyserverDataGenerator"
+      "com.dripps.voxyserver.client.VoxyServerDataGenerator"
     ],
     "client": [
-      "com.dripps.voxyserver.client.VoxyserverClient"
+      "com.dripps.voxyserver.client.VoxyServerClient"
     ],
     "main": [
-      "com.dripps.voxyserver.Voxyserver"
+      "com.dripps.voxyserver.VoxyServer"
     ],
     "modmenu": [
       "com.dripps.voxyserver.client.VoxyModMenuIntegration"

@@ -1,6 +1,6 @@
 package com.dripps.voxyserver.client;
 
-import com.dripps.voxyserver.Voxyserver;
+import com.dripps.voxyserver.VoxyServer;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import net.fabricmc.loader.api.FabricLoader;
@@ -31,7 +31,7 @@ public class ClientLodConfig {
                     return config;
                 }
             } catch (Exception e) {
-                Voxyserver.LOGGER.warn("using defaults..", e);
+                VoxyServer.LOGGER.warn("using defaults..", e);
             }
         }
 
@@ -71,7 +71,7 @@ public class ClientLodConfig {
             Files.createDirectories(configPath.getParent());
             Files.writeString(configPath, GSON.toJson(this));
         } catch (IOException e) {
-            Voxyserver.LOGGER.warn("coukltnt save client config", e);
+            VoxyServer.LOGGER.warn("coukltnt save client config", e);
         }
     }
 

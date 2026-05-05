@@ -1,6 +1,5 @@
 package com.dripps.voxyserver.server;
 
-import com.dripps.voxyserver.Voxyserver;
 import me.cortex.voxy.common.world.WorldEngine;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerChunkEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;

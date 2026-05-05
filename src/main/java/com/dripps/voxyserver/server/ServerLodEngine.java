@@ -1,6 +1,6 @@
 package com.dripps.voxyserver.server;
 
-import com.dripps.voxyserver.Voxyserver;
+import com.dripps.voxyserver.VoxyServer;
 import me.cortex.voxy.common.StorageConfigUtil;
 import me.cortex.voxy.common.config.ConfigBuildCtx;
 import me.cortex.voxy.common.config.section.SectionStorage;
@@ -41,7 +41,7 @@ public class ServerLodEngine extends VoxyInstance {
         this.basePath = worldFolder.resolve("voxyserver");
         this.storageConfig = StorageConfigUtil.createDefaultSerializer();
         this.updateDedicatedThreads();
-        Voxyserver.LOGGER.info("server lod engine started, storage at {}", this.basePath);
+        VoxyServer.LOGGER.info("server lod engine started, storage at {}", this.basePath);
     }
 
     public void updateDedicatedThreadsCount(int threads){
@@ -69,7 +69,7 @@ public class ServerLodEngine extends VoxyInstance {
         try {
             world = super.getOrCreate(identifier);
         } catch (Exception e) {
-            Voxyserver.LOGGER.error("couldnt get or create world for {}, this is prolly a leaked lock in VoxyInstance", identifier, e);
+            VoxyServer.LOGGER.error("couldnt get or create world for {}, this is prolly a leaked lock in VoxyInstance", identifier, e);
             return null;
         }
         if (world == null) {
@@ -89,7 +89,7 @@ public class ServerLodEngine extends VoxyInstance {
         try {
             world = super.getOrCreate(identifier);
         } catch (Exception e) {
-            Voxyserver.LOGGER.error("couldnt get or create world for {}, this is prolly a leaked lock in VoxyInstance", identifier, e);
+            VoxyServer.LOGGER.error("couldnt get or create world for {}, this is prolly a leaked lock in VoxyInstance", identifier, e);
             return null;
         }
         if (world == null) {
@@ -212,7 +212,7 @@ public class ServerLodEngine extends VoxyInstance {
                     world.storage.iteratePositions(0, key -> index.addTo(filter, key));
                     index.completeBuild(filter);
                 } catch (Exception e) {
-                    Voxyserver.LOGGER.warn("failed to build presence index for {}", identifier.getLongHash(), e);
+                    VoxyServer.LOGGER.warn("failed to build presence index for {}", identifier.getLongHash(), e);
                     index.failBuild();
                 } finally {
                     world.releaseRef();

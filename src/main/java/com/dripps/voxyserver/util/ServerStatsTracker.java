@@ -1,6 +1,6 @@
 package com.dripps.voxyserver.util;
 
-import com.dripps.voxyserver.Voxyserver;
+import com.dripps.voxyserver.VoxyServer;
 import net.minecraft.server.MinecraftServer;
 
 import java.util.concurrent.atomic.LongAdder;
@@ -33,7 +33,7 @@ public class ServerStatsTracker {
     public void tick(MinecraftServer server) {
         if (++this.ticks >= this.tickInterval) {
             this.ticks = 0;
-            Voxyserver.LOGGER.info(
+            VoxyServer.LOGGER.info(
                     "stats: chunks voxelized {} | sections streamed {} | engine actions {}",
                     this.chunksVoxelized.sumThenReset(),
                     this.sectionsStreamed.sumThenReset(),
