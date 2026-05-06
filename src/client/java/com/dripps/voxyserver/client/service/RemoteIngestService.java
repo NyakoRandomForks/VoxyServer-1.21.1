@@ -103,10 +103,16 @@ public class RemoteIngestService {
     }
 
     public void enqueueIngest(WorldIdentifier worldId, ClientLevel level, LODBulkPayload bulk) {
+        if (!voxyInstance.isRunning()) {
+            VoxyServer.LOGGER.warn("Tried enqueue ingest to voxy instance that not running");
+            return;
+        }
         WorldEngine engine = voxyInstance.getOrCreate(worldId);
         if (this.service.isLive()) {
-            if (!engine.isLive())
-                throw new IllegalStateException("Tried inserting chunk into WorldEngine that was not alive");
+            if (!engine.isLive()) {
+                VoxyServer.LOGGER.warn("Tried inserting chunk into WorldEngine that was not alive");
+                return;
+            }
 
             engine.markActive();
             this.ingestQueue.add(new IngestSection(engine, level, bulk));
@@ -114,7 +120,7 @@ public class RemoteIngestService {
             try {
                 this.service.execute();
             } catch (Exception ex) {
-                VoxyServer.LOGGER.error("Executing had an error: assume shutting down, aborting", ex);
+                VoxyServer.LOGGER.error("Exception caught while enqueuing remote ingest", ex);
             }
         }
     }
