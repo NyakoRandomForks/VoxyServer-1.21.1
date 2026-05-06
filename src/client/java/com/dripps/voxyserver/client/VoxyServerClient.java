@@ -26,7 +26,7 @@ public class VoxyServerClient implements ClientModInitializer {
         ClientPlayNetworking.registerGlobalReceiver(PreSerializedLodPayload.TYPE, this::onLodReceived);
 
         ClientPlayNetworking.registerGlobalReceiver(LODClearPayload.TYPE, (payload, context) -> {
-            context.client().execute(() -> handleClear(payload));
+            // context.client().execute(() -> handleClear(payload));
         });
     }
 

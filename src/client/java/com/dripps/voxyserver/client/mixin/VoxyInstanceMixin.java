@@ -40,19 +40,21 @@ public abstract class VoxyInstanceMixin implements IVoxyServerIngestAccess {
         }
     }
 
-    @Inject(method= "isIngestEnabled(Lme/cortex/voxy/commonImpl/WorldIdentifier;)Z", at = @At("HEAD"), cancellable = true)
-    private void voxyserver$disableClientsideIngest(WorldIdentifier worldId, CallbackInfoReturnable<Boolean> cir){
+    @Inject(method = "isIngestEnabled(Lme/cortex/voxy/commonImpl/WorldIdentifier;)Z", at = @At("HEAD"), cancellable = true)
+    private void voxyserver$disableClientsideIngest(WorldIdentifier worldId, CallbackInfoReturnable<Boolean> cir) {
         if (voxyserver$usingRemoteIngest) {
             cir.setReturnValue(false);
         }
     }
 
+    @Override
     public RemoteIngestService voxyserver$getRemoteIngestService() {
         return voxyserver$remoteIngestService;
     }
 
     @Override
     public void voxyserver$setUsingRemoteIngest(boolean remoteIngest) {
+        VoxyServer.LOGGER.info("Voxy's local world ingest has been {}", remoteIngest ? "DISABLED" : "ENABLED");
         voxyserver$usingRemoteIngest = remoteIngest;
     }
 }
