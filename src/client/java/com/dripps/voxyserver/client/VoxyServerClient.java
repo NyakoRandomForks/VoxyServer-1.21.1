@@ -3,6 +3,7 @@ package com.dripps.voxyserver.client;
 import com.dripps.voxyserver.client.config.ClientLodSettings;
 import com.dripps.voxyserver.client.service.IVoxyServerIngestAccess;
 import com.dripps.voxyserver.network.*;
+import me.cortex.voxy.common.world.WorldEngine;
 import me.cortex.voxy.commonImpl.VoxyCommon;
 import me.cortex.voxy.commonImpl.VoxyInstance;
 import me.cortex.voxy.commonImpl.WorldIdentifier;
@@ -55,15 +56,17 @@ public class VoxyServerClient implements ClientModInitializer {
             return;
 
         VoxyInstance instance = VoxyCommon.getInstance();
-        if (instance == null)
+        if (instance == null || !instance.isRunning())
             return;
 
         WorldIdentifier worldId = WorldIdentifier.of(level);
         if (worldId == null)
             return;
 
+        WorldEngine engine = instance.getOrCreate(worldId);
         LODBulkPayload bulk = payload.decodeBulk(level.registryAccess());
-        ((IVoxyServerIngestAccess) instance).voxyserver$getRemoteIngestService().enqueueIngest(worldId, level, bulk);
+
+        ((IVoxyServerIngestAccess) instance).voxyserver$getRemoteIngestService().enqueueIngest(engine, level, bulk);
     }
 
 

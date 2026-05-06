@@ -10,8 +10,6 @@ import me.cortex.voxy.common.voxelization.WorldVoxilizedSectionMipper;
 import me.cortex.voxy.common.world.WorldEngine;
 import me.cortex.voxy.common.world.WorldUpdater;
 import me.cortex.voxy.common.world.other.Mapper;
-import me.cortex.voxy.commonImpl.VoxyInstance;
-import me.cortex.voxy.commonImpl.WorldIdentifier;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
@@ -28,12 +26,10 @@ public class RemoteIngestService {
     private record IngestSection(WorldEngine engine, ClientLevel level, LODBulkPayload bulk) {
     }
 
-    private final VoxyInstance voxyInstance;
     private final Service service;
     private final ConcurrentLinkedDeque<IngestSection> ingestQueue = new ConcurrentLinkedDeque<>();
 
-    public RemoteIngestService(VoxyInstance instance, ServiceManager pool) {
-        this.voxyInstance = instance;
+    public RemoteIngestService(ServiceManager pool) {
         this.service = pool.createServiceNoCleanup(() -> {
             return this::processJob;
         }, 5000L, "VoxyServer-RemoteIngestService");
@@ -102,12 +98,7 @@ public class RemoteIngestService {
         return remapped;
     }
 
-    public void enqueueIngest(WorldIdentifier worldId, ClientLevel level, LODBulkPayload bulk) {
-        if (!voxyInstance.isRunning()) {
-            VoxyServer.LOGGER.warn("Tried enqueue ingest to voxy instance that not running");
-            return;
-        }
-        WorldEngine engine = voxyInstance.getOrCreate(worldId);
+    public void enqueueIngest(WorldEngine engine, ClientLevel level, LODBulkPayload bulk) {
         if (this.service.isLive()) {
             if (!engine.isLive()) {
                 VoxyServer.LOGGER.warn("Tried inserting chunk into WorldEngine that was not alive");

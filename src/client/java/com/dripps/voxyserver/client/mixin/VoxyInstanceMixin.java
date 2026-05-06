@@ -27,7 +27,7 @@ public abstract class VoxyInstanceMixin implements IVoxyServerIngestAccess {
     @Inject(method = "<init>()V", at = @At("RETURN"))
     private void voxyserver$init(CallbackInfo ci) {
         VoxyServer.LOGGER.info("Initializing remote ingest service...");
-        voxyserver$remoteIngestService = new RemoteIngestService(((VoxyInstance) (Object) this), this.getServiceManager());
+        voxyserver$remoteIngestService = new RemoteIngestService(this.getServiceManager());
     }
 
     @Inject(method = "shutdown()V", at = @At(value = "INVOKE", target = "Ljava/util/concurrent/locks/StampedLock;writeLock()J"))
