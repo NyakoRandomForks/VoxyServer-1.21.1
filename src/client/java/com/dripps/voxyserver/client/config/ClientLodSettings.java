@@ -1,4 +1,4 @@
-package com.dripps.voxyserver.client;
+package com.dripps.voxyserver.client.config;
 
 import com.dripps.voxyserver.network.LODPreferencesPayload;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;

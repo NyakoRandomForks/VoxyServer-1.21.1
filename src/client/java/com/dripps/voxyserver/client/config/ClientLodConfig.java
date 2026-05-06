@@ -1,4 +1,4 @@
-package com.dripps.voxyserver.client;
+package com.dripps.voxyserver.client.config;
 
 import com.dripps.voxyserver.VoxyServer;
 import com.google.gson.Gson;

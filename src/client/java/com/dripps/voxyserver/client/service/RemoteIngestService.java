@@ -1,16 +1,17 @@
-package com.dripps.voxyserver.client;
+package com.dripps.voxyserver.client.service;
 
+import com.dripps.voxyserver.VoxyServer;
 import com.dripps.voxyserver.network.LODBulkPayload;
 import com.dripps.voxyserver.network.LODSectionPayload;
-import me.cortex.voxy.common.Logger;
 import me.cortex.voxy.common.thread.Service;
 import me.cortex.voxy.common.thread.ServiceManager;
 import me.cortex.voxy.common.voxelization.VoxelizedSection;
-import me.cortex.voxy.common.voxelization.WorldConversionFactory;
 import me.cortex.voxy.common.voxelization.WorldVoxilizedSectionMipper;
 import me.cortex.voxy.common.world.WorldEngine;
 import me.cortex.voxy.common.world.WorldUpdater;
 import me.cortex.voxy.common.world.other.Mapper;
+import me.cortex.voxy.commonImpl.VoxyInstance;
+import me.cortex.voxy.commonImpl.WorldIdentifier;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
@@ -23,16 +24,19 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
 public class RemoteIngestService {
+
     private record IngestSection(WorldEngine engine, ClientLevel level, LODBulkPayload bulk) {
     }
 
+    private final VoxyInstance voxyInstance;
     private final Service service;
     private final ConcurrentLinkedDeque<IngestSection> ingestQueue = new ConcurrentLinkedDeque<>();
 
-    public RemoteIngestService(ServiceManager pool) {
+    public RemoteIngestService(VoxyInstance instance, ServiceManager pool) {
+        this.voxyInstance = instance;
         this.service = pool.createServiceNoCleanup(() -> {
             return this::processJob;
-        }, 5000L, "Remote Ingest service");
+        }, 5000L, "VoxyServer-RemoteIngestService");
     }
 
     private void processJob() {
@@ -98,26 +102,24 @@ public class RemoteIngestService {
         return remapped;
     }
 
+    public void enqueueIngest(WorldIdentifier worldId, ClientLevel level, LODBulkPayload bulk) {
+        WorldEngine engine = voxyInstance.getOrCreate(worldId);
+        if (this.service.isLive()) {
+            if (!engine.isLive())
+                throw new IllegalStateException("Tried inserting chunk into WorldEngine that was not alive");
 
-    public static void ingestSections(WorldEngine engine, ClientLevel level, LODBulkPayload bulk) {
-        VoxyServerClient.getIngestService().enqueueIngest(engine, level, bulk);
-    }
-
-    public void enqueueIngest(WorldEngine engine, ClientLevel level, LODBulkPayload bulk) {
-        if (!this.service.isLive()) {
-            return;
-        } else if (!engine.isLive()) {
-            throw new IllegalStateException("Tried inserting chunk into WorldEngine that was not alive");
-        } else {
             engine.markActive();
             this.ingestQueue.add(new IngestSection(engine, level, bulk));
 
             try {
                 this.service.execute();
-            } catch (Exception var18) {
-                Logger.error(new Object[]{"Executing had an error: assume shutting down, aborting", var18});
+            } catch (Exception ex) {
+                VoxyServer.LOGGER.error("Executing had an error: assume shutting down, aborting", ex);
             }
         }
     }
 
+    public void shutdown() {
+        this.service.shutdown();
+    }
 }
