@@ -1,5 +1,6 @@
 package com.dripps.voxyserver.server;
 
+import com.dripps.voxyserver.util.ServerStatsTracker;
 import me.cortex.voxy.common.world.WorldEngine;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerChunkEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
@@ -67,8 +68,8 @@ public class ChunkVoxelizer {
 
         engine.markChunkPossiblyPresent(level, chunk);
 
-        if (com.dripps.voxyserver.util.ServerStatsTracker.INSTANCE != null) {
-            com.dripps.voxyserver.util.ServerStatsTracker.INSTANCE.markVoxelized();
+        if (ServerStatsTracker.INSTANCE != null) {
+            ServerStatsTracker.INSTANCE.markVoxelized();
         }
 
         boolean enqueued = engine.getIngestService().enqueueIngest(world, chunk);
