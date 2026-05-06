@@ -5,17 +5,21 @@ import com.dripps.voxyserver.client.service.IVoxyServerIngestAccess;
 import com.dripps.voxyserver.client.service.RemoteIngestService;
 import me.cortex.voxy.common.thread.ServiceManager;
 import me.cortex.voxy.commonImpl.VoxyInstance;
+import me.cortex.voxy.commonImpl.WorldIdentifier;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(VoxyInstance.class)
 public abstract class VoxyInstanceMixin implements IVoxyServerIngestAccess {
     @Unique
     private RemoteIngestService voxyserver$remoteIngestService;
+    @Unique
+    private boolean voxyserver$usingRemoteIngest = false;
 
     @Shadow
     public abstract ServiceManager getServiceManager();
@@ -36,7 +40,19 @@ public abstract class VoxyInstanceMixin implements IVoxyServerIngestAccess {
         }
     }
 
+    @Inject(method= "isIngestEnabled(Lme/cortex/voxy/commonImpl/WorldIdentifier;)Z", at = @At("HEAD"), cancellable = true)
+    private void voxyserver$disableClientsideIngest(WorldIdentifier worldId, CallbackInfoReturnable<Boolean> cir){
+        if (voxyserver$usingRemoteIngest) {
+            cir.setReturnValue(false);
+        }
+    }
+
     public RemoteIngestService voxyserver$getRemoteIngestService() {
         return voxyserver$remoteIngestService;
+    }
+
+    @Override
+    public void voxyserver$setUsingRemoteIngest(boolean remoteIngest) {
+        voxyserver$usingRemoteIngest = remoteIngest;
     }
 }

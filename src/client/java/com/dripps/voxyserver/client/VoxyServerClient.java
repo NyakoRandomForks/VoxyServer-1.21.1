@@ -39,8 +39,14 @@ public class VoxyServerClient implements ClientModInitializer {
     }
 
     private void onHandshake(LODServerSettingsPayload payload, ClientPlayNetworking.Context context) {
-        context.client().execute(() -> ClientLodSettings.applyServerSettings(
-                payload.maxLodStreamRadius(), payload.maxSectionsPerTick()));
+        context.client().execute(() -> {
+            ClientLodSettings.applyServerSettings(payload.maxLodStreamRadius(), payload.maxSectionsPerTick());
+
+            VoxyInstance instance = VoxyCommon.getInstance();
+            if (instance == null)
+                return;
+            ((IVoxyServerIngestAccess) instance).voxyserver$setUsingRemoteIngest(true);
+        });
     }
 
     private void onLodReceived(PreSerializedLodPayload payload, ClientPlayNetworking.Context context) {
