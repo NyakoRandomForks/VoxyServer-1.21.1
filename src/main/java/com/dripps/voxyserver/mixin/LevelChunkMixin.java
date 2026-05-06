@@ -21,11 +21,11 @@ public abstract class LevelChunkMixin {
     @Inject(method = "setBlockState", at = @At("RETURN"))
     private void voxyserver$onBlockChanged(BlockPos pos, BlockState state, boolean moved, CallbackInfoReturnable<BlockState> cir) {
         if (cir.getReturnValue() == null) return; // no actual change
-        Level level = this.getLevel();
-        if (!(level instanceof ServerLevel serverLevel)) return;
-
         DirtyTracker tracker = DirtyTracker.INSTANCE;
         if (tracker != null) {
+            Level level = this.getLevel();
+            if (!(level instanceof ServerLevel serverLevel)) return;
+
             LevelChunk self = (LevelChunk) (Object) this;
             tracker.markDirty(serverLevel, self.getPos().x, pos.getY(), self.getPos().z);
         }
