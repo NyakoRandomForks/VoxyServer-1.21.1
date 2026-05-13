@@ -1,5 +1,11 @@
 # voxyserver
 
+A fork to improve VoxyServer performance and some other random changes for my personal server.
+
+content below were taken from the upstream repo, might be outdated.
+
+---
+
 > **⚠️ UNOFFICIAL 1.21.1 BACKPORT ⚠️**
 >
 > This is an unofficial backport of VoxyServer for Minecraft 1.21.1. 
